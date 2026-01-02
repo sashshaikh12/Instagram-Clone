@@ -2,10 +2,10 @@ package com.example.instagramclone.Data.Repository
 
 import android.content.SharedPreferences
 
-class LoginRepository(private val prefs: SharedPreferences) {
+open class LoginRepository(private val prefs: SharedPreferences) {
 
     // checks if the login credentials match, no database used here so repository itself saves flag locally
-    fun login(email: String, password: String) : Boolean{
+    open fun login(email: String, password: String) : Boolean{
         val loginSuccess = (email == "user@example.com" && password == "password123")
         if(loginSuccess)
         {
@@ -15,7 +15,7 @@ class LoginRepository(private val prefs: SharedPreferences) {
     }
 
     // returns true if user had successfully "logged in" in the last session
-    fun isLoggedIn() : Boolean{
+    open fun isLoggedIn() : Boolean{
         return prefs.getBoolean("loginFlag", false)
     }
 }
