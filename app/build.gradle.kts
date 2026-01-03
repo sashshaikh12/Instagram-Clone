@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("plugin.serialization") version "2.0.21"
+    id("kotlin-kapt")
 }
 
 android {
@@ -41,6 +42,10 @@ android {
 
 dependencies {
 
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.glide)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
     implementation (libs.converter.moshi)
     implementation(libs.moshi.kotlin)
     implementation(libs.retrofit.v300)
