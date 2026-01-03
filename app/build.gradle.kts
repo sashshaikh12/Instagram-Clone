@@ -41,6 +41,10 @@ android {
 
 dependencies {
 
+    implementation (libs.converter.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.retrofit.v300)
+    implementation(libs.moshi)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
