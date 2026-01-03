@@ -3,6 +3,7 @@ package com.example.instagramclone.Ui.Fragments
 import FeedRepository
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.instagramclone.Data.Local.Database.AppDatabase
@@ -12,6 +13,7 @@ import com.example.instagramclone.Ui.Adapters.FeedAdapter
 import com.example.instagramclone.Ui.State.FeedUiState
 import com.example.instagramclone.Viewmodel.FeedViewModel
 import com.example.instagramclone.databinding.FeedFragmentBinding
+import com.google.android.material.snackbar.Snackbar
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
 
@@ -40,15 +42,21 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
         feedViewModel.feedState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is FeedUiState.Loading -> {
-                    // show progress bar if you want
-                }
                 is FeedUiState.Success -> {
                     feedAdapter.submitList(state.posts)
+
+                    if (state.isOffline) {
+                        Toast.makeText(
+                            requireContext(),
+                            "No Network Connection",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
                 is FeedUiState.Error -> {
-                    // show snackbar
+                    Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
                 }
+                else -> Unit
             }
         }
     }

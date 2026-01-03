@@ -5,6 +5,7 @@ import androidx.annotation.RequiresPermission
 import com.example.instagramclone.Data.Local.Dao.FeedDao
 import com.example.instagramclone.Data.Local.Entity.FeedEntity
 import com.example.instagramclone.Data.Network.FeedApiService
+import com.example.instagramclone.Ui.FeedResult
 import com.example.instagramclone.Utils.NetworkUtils
 
 class FeedRepository(
@@ -15,9 +16,10 @@ class FeedRepository(
 
     val TAG = "ERROR"
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
-    suspend fun getFeed(): List<FeedEntity> {
+    suspend fun getFeed(): FeedResult {
 
-        if (NetworkUtils.isNetworkAvailable(context)) {
+        val isOnline = NetworkUtils.isNetworkAvailable(context)
+        if (isOnline) {
             try {
                 val response = api.getPosts()
 
@@ -45,6 +47,9 @@ class FeedRepository(
         }
 
         // Always return Room data as it is the source of truth
-        return dao.getAllPosts()
+        return FeedResult(
+            posts = dao.getAllPosts(),
+            isOffline = !isOnline
+        )
     }
 }
