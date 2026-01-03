@@ -5,6 +5,7 @@ import androidx.annotation.RequiresPermission
 import com.example.instagramclone.Data.Local.Dao.FeedDao
 import com.example.instagramclone.Data.Local.Entity.FeedEntity
 import com.example.instagramclone.Data.Network.FeedApiService
+import com.example.instagramclone.Data.Network.Request.LikeRequest
 import com.example.instagramclone.Ui.FeedResult
 import com.example.instagramclone.Utils.NetworkUtils
 
@@ -52,4 +53,38 @@ class FeedRepository(
             isOffline = !isOnline
         )
     }
+
+    suspend fun toggleLike(post: FeedEntity): Boolean {
+        return try {
+            if (post.liked_by_user) {
+                api.likePost(
+                    LikeRequest(
+                        like = true,
+                        post_id = post.post_id
+                    )
+                )
+
+            } else {
+                api.dislikePost(
+                    LikeRequest(
+                        like = false,
+                        post_id = post.post_id
+                    )
+                )
+
+            }
+
+            dao.updateLike(
+                id = post.post_id,
+                count = post.like_count,
+                liked = post.liked_by_user
+            )
+
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+
 }

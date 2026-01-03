@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.instagramclone.Data.Local.Entity.FeedEntity
 import com.example.instagramclone.R
 
-class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolderClass>() {
+class FeedAdapter(private val onLikeClick: (FeedEntity) -> Unit) : RecyclerView.Adapter<FeedAdapter.ViewHolderClass>() {
 
     private val dataList = ArrayList<FeedEntity>()
 
@@ -47,6 +47,10 @@ class FeedAdapter : RecyclerView.Adapter<FeedAdapter.ViewHolderClass>() {
 
         holder.rvLikeButton.text =
             if (currentItem.liked_by_user) "Liked" else "Like"
+
+        holder.rvLikeButton.setOnClickListener {
+            onLikeClick(currentItem)
+        }
     }
 
     class ViewHolderClass(itemView: View) : RecyclerView.ViewHolder(itemView) {

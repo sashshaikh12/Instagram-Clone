@@ -28,7 +28,9 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
         _binding = FeedFragmentBinding.bind(view)
 
-        feedAdapter = FeedAdapter()
+        feedAdapter = FeedAdapter { post ->
+            feedViewModel.onLikeClicked(post)
+        }
         binding.FeedRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = feedAdapter
