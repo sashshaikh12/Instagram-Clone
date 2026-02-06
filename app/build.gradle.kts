@@ -43,6 +43,10 @@ android {
 dependencies {
 
     kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui.compose)
     implementation(libs.glide)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

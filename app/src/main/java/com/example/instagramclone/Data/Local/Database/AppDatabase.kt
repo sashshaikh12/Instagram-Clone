@@ -5,11 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.instagramclone.Data.Local.Dao.FeedDao
+import com.example.instagramclone.Data.Local.Dao.ReelDao
 import com.example.instagramclone.Data.Local.Entity.FeedEntity
+import com.example.instagramclone.Data.Local.Entity.ReelEntity
 
-@Database(entities = [FeedEntity::class], version = 1)
+@Database(entities = [FeedEntity::class, ReelEntity::class], version = 1)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun feedDao(): FeedDao
+    abstract fun reelDao(): ReelDao
 
     companion object {
         private var INSTANCE: AppDatabase? = null
