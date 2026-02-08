@@ -28,11 +28,13 @@ class FeedViewModel(
         viewModelScope.launch {
             try {
                 val result = repository.getFeed()
+                Log.d("FEEDRESULT", "$result")
                 _feedState.value = FeedUiState.Success(
                     posts = result.posts,
                     isOffline = result.isOffline
                 )
             } catch (e: Exception) {
+                Log.d("FEEDRESULT", "we are cooked")
                 _feedState.value = FeedUiState.Error("Failed to load feed")
             }
         }

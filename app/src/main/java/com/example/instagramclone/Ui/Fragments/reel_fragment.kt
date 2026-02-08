@@ -2,9 +2,12 @@ package com.example.instagramclone.Ui.Fragments
 
 import FeedRepository
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.instagramclone.Data.Local.Database.AppDatabase
 import com.example.instagramclone.Data.Network.FeedRetrofitInstance
 import com.example.instagramclone.Data.Network.ReelRetrofitInstance
@@ -33,6 +36,14 @@ class ReelFragment : Fragment(R.layout.reel_fragment)
 
         _binding = ReelFragmentBinding.bind(view)
 
+        reelAdapter = ReelAdapter { reel ->
+            reelViewModel.onLikeClicked(reel)
+        }
+
+        _binding!!.viewPager.adapter = reelAdapter
+        _binding!!.viewPager.orientation = ViewPager2.ORIENTATION_VERTICAL
+
+
         val dao = AppDatabase.getInstance(requireContext()).reelDao()
         val api = ReelRetrofitInstance().api
         val repository = ReelRepository(api, dao, requireContext())
@@ -41,6 +52,7 @@ class ReelFragment : Fragment(R.layout.reel_fragment)
         reelViewModel.reelState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ReelUiState.Success -> {
+                    Log.d("REELS", "$state.reels")
                     reelAdapter.submitList(state.reels)
 
                     if (state.isOffline) {
