@@ -21,6 +21,7 @@ class ReelAdapter(private val onLikeClick: (ReelEntity) -> Unit) : RecyclerView.
 {
 
     private val dataList = ArrayList<ReelEntity>()
+    private val activeHolders = mutableSetOf<ViewHolder>()
 
     fun submitList(newList: List<ReelEntity>) {
         dataList.clear()
@@ -37,6 +38,7 @@ class ReelAdapter(private val onLikeClick: (ReelEntity) -> Unit) : RecyclerView.
         val rvLikeButton: Button = itemView.findViewById(R.id.likeButtonReel)
         val rvLikeCount: TextView = itemView.findViewById(R.id.likeCountReel)
         val rvDescription: TextView = itemView.findViewById(R.id.reelDescription)
+        var player: ExoPlayer? = null
     }
 
     override fun onCreateViewHolder(
@@ -71,19 +73,58 @@ class ReelAdapter(private val onLikeClick: (ReelEntity) -> Unit) : RecyclerView.
             onLikeClick(reel)
         }
 
-        Log.d("bindingReel", "$reel")
-        val player = ExoPlayer.Builder(holder.itemView.context).build()
-        holder.playerView.player = player
+        holder.player?.release()
+        holder.player = ExoPlayer.Builder(holder.itemView.context).build()
+        holder.playerView.player = holder.player
         val mediaItem = MediaItem.fromUri(reel.reel_video)
-        player.setMediaItem(mediaItem)
-        player.prepare()
-        //player.playWhenReady = true
-        player.play()
+        holder.player?.setMediaItem(mediaItem)
+        holder.player?.prepare()
+        holder.player?.playWhenReady = true
+        activeHolders.add(holder)
     }
 
 
     override fun getItemCount(): Int {
         return dataList.size
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.player?.pause()
+    }
+
+    // 🔥 Called when view is recycled
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        holder.player?.release()
+        holder.player = null
+        activeHolders.remove(holder)
+    }
+
+    // 🔥 Called when item becomes visible
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.player?.play()
+    }
+
+    // 🔥 Called from Activity
+    fun pauseAllPlayers() {
+        for (holder in activeHolders) {
+            holder.player?.pause()
+        }
+    }
+
+    fun resumeVisiblePlayers() {
+        for (holder in activeHolders) {
+            holder.player?.play()
+        }
+    }
+
+    fun releaseAllPlayers() {
+        for (holder in activeHolders) {
+            holder.player?.release()
+        }
+        activeHolders.clear()
     }
 
 }

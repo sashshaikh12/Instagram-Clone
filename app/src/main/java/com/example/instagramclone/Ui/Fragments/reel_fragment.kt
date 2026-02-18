@@ -70,11 +70,21 @@ class ReelFragment : Fragment(R.layout.reel_fragment)
             }
         }
 
+    }
 
+    override fun onPause() {
+        super.onPause()
+        reelAdapter.pauseAllPlayers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reelAdapter.resumeVisiblePlayers()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        reelAdapter.releaseAllPlayers()
         _binding = null
     }
 
